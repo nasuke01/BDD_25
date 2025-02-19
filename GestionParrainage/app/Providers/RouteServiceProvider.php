@@ -20,20 +20,30 @@ class RouteServiceProvider extends ServiceProvider
     public const HOME = '/home';
 
     /**
+     * Namespace par défaut pour les contrôleurs.
+     */
+    protected $namespace = 'App\\Http\\Controllers';
+
+    /**
      * Define your route model bindings, pattern filters, and other route configuration.
      */
     public function boot(): void
     {
+        // Limite de requêtes API par minute
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
 
         $this->routes(function () {
-            Route::middleware('api')
-                ->prefix('api')
+            // Chargement des routes API
+            Route::prefix('api')
+                ->middleware('api')
+                ->namespace($this->namespace)  // ✅ Ajout du namespace
                 ->group(base_path('routes/api.php'));
 
+            // Chargement des routes Web
             Route::middleware('web')
+                ->namespace($this->namespace)  // ✅ Ajout du namespace
                 ->group(base_path('routes/web.php'));
         });
     }
