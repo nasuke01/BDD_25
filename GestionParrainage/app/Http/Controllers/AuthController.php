@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Candidat;
 
 class AuthController extends Controller
 {
@@ -53,6 +54,11 @@ class AuthController extends Controller
             'type_utilisateur' => $validatedData['type_utilisateur'],
             'password' => Hash::make($validatedData['password']),
         ]);
+
+        // ✅ Si l'utilisateur est un candidat, on l'ajoute dans la table `candidats`
+        if ($user->type_utilisateur == 'CANDIDAT') {
+            app(CandidatController::class)->addCandidateAfterRegister($user->id, $request->all());
+        }
 
         // ✅ Gestion des réponses en fonction du type de requête
         if ($request->wantsJson()) {

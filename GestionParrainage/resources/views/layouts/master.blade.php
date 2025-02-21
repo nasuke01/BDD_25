@@ -15,7 +15,6 @@
                 <li><a href="{{ route('home') }}">Accueil</a></li>
                 <li><a href="{{ route('candidats.index') }}">Candidats</a></li>
                 <li><a href="{{ route('parrainage.index') }}">Parrainage</a></li>
-                <li><a href="{{ route('dashboard.index') }}">Tableau de bord</a></li>
             </ul>
         </nav>
     </header>
