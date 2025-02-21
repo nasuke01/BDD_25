@@ -10,11 +10,20 @@ use App\Models\User;
 class CandidatController extends Controller
 {
     /**
-     * Récupérer la liste des candidats
+     * Récupérer la liste des candidats en JSON
      */
     public function index()
     {
         return response()->json(Candidat::with('user:id,nom,prenom,email')->get(), 200);
+    }
+
+    /**
+     * Afficher la liste des candidats en Blade
+     */
+    public function afficherCandidats()
+    {
+        $candidats = Candidat::with('user')->get();
+        return view('candidats', compact('candidats'));
     }
 
     /**

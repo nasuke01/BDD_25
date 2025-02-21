@@ -4,12 +4,16 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ParrainageController;
 use App\Http\Controllers\DGEController;
+use App\Http\Controllers\CandidatController;
 
 Route::prefix('api')->group(function () {
     // 📌 Authentification
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+
+    // 📌 Récupération des candidats (public)
+    Route::get('/candidats', [CandidatController::class, 'index']);
 
     // 📌 Gestion des parrainages (Protégé)
     Route::middleware('auth:sanctum')->group(function () {

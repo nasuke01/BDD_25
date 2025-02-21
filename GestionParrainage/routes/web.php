@@ -43,10 +43,18 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-// ✅ Routes pour les candidats
-Route::get('/candidats', [CandidatController::class, 'index'])->name('candidats.index');
+// ✅ Routes pour les candidats (API JSON)
+Route::get('/candidats-json', [CandidatController::class, 'index'])->name('candidats.index');
 Route::get('/candidats/inscription', [CandidatController::class, 'create'])->name('candidats.create');
 Route::post('/candidats', [CandidatController::class, 'store'])->name('candidats.store');
+
+// ✅ Route pour afficher la liste des candidats en Blade
+Route::get('/candidats', [CandidatController::class, 'afficherCandidats'])->name('candidats.afficher');
+
+// route pour afficher parrainage en blade
+Route::get('/parrainer/{id}', [ParrainageController::class, 'afficherFormulaire'])->name('parrainage.form');
+Route::post('/parrainage', [ParrainageController::class, 'store'])->name('parrainage.store');
+
 
 // ✅ Routes pour le parrainage
 Route::get('/parrainage', [ParrainageController::class, 'index'])->name('parrainage.index');
