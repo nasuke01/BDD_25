@@ -4,24 +4,23 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
-    /**
-     * Run the migrations.
-     */
+return new class extends Migration {
     public function up(): void
     {
-        Schema::create('imports_electeurs', function (Blueprint $table) {
+        Schema::create('electeurs_imports', function (Blueprint $table) {
             $table->id();
+            $table->string('numCarteElecteur')->unique();
+            $table->string('cin')->unique()->nullable();
+            $table->string('nom');
+            $table->string('prenom');
+            $table->date('dateNaissance');
+            $table->boolean('verifie')->default(false);
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('imports_electeurs');
+        Schema::dropIfExists('electeurs_imports');
     }
 };
