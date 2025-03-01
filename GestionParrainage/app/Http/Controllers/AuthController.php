@@ -27,6 +27,28 @@ class AuthController extends Controller
     {
         return view('auth.login');
     }
+    public function login(Request $request)
+{
+    // ✅ Validation des champs
+    $credentials = $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
+
+    if (!Auth::attempt($credentials)) {
+        return back()->withErrors(['email' => 'Les informations de connexion sont incorrectes.']);
+    }
+
+    $request->session()->regenerate();
+
+    // ✅ Vérifier si c'est un administrateur
+    if (Auth::user()->type_utilisateur === 'ADMINISTRATEUR') {
+        return redirect()->route('admin.dashboard')->with('success', 'Bienvenue sur le tableau de bord administrateur.');
+    }
+
+    return redirect()->route('accueil.parrainage')->with('success', 'Connexion réussie !');
+}
+
 
     /**
      * Enregistre un nouvel utilisateur et bloque l'inscription des candidats après le début du parrainage

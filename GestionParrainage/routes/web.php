@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CandidatController;
 use App\Http\Controllers\ParrainageController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ElecteurController;
 use App\Http\Controllers\DashboardController;
 
@@ -81,3 +82,10 @@ use App\Http\Controllers\PeriodeParrainageController;
 Route::get('/admin/parrainage', [PeriodeParrainageController::class, 'showForm'])->name('periode.form');
 Route::post('/admin/parrainage', [PeriodeParrainageController::class, 'store'])->name('periode.store');
 
+
+// ✅ Route protégée pour le tableau de bord de l'admin
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::post('/admin/fermer-parrainage', [AdminController::class, 'fermerParrainage'])->name('admin.fermer.parrainage');
+    Route::post('/admin/fermer-candidature', [AdminController::class, 'fermerCandidature'])->name('admin.fermer.candidature');
+});
