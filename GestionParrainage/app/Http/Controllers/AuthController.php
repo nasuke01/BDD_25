@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Candidat;
 
@@ -15,7 +15,7 @@ class AuthController extends Controller
      */
     public function showRegisterForm()
     {
-        return view('auth.register'); // Vérifie que resources/views/auth/register.blade.php existe
+        return view('auth.register');
     }
 
     /**
@@ -23,15 +23,18 @@ class AuthController extends Controller
      */
     public function showLoginForm()
     {
-        return view('auth.login'); // Vérifie que resources/views/auth/login.blade.php existe
+        return view('auth.login');
     }
 
     /**
-     * Enregistre un nouvel utilisateur
+     * Enregistre un nouvel utilisateur et l'ajoute à la table `candidats` si c'est un candidat
      */
     public function register(Request $request)
     {
-        // ✅ Validation des données
+        // ✅ Vérifier que les données du formulaire sont bien envoyées
+        // dd($request->all());
+
+        // ✅ Validation des champs
         $validatedData = $request->validate([
             'numCarteElecteur' => 'required|string|unique:users,numCarteElecteur',
             'dateNaissance' => 'required|date',
@@ -43,7 +46,7 @@ class AuthController extends Controller
             'password' => 'required|string|min:6|confirmed',
         ]);
 
-        // ✅ Création de l'utilisateur
+        // ✅ Création de l'utilisateur dans `users`
         $user = User::create([
             'numCarteElecteur' => $validatedData['numCarteElecteur'],
             'dateNaissance' => $validatedData['dateNaissance'],
@@ -55,53 +58,51 @@ class AuthController extends Controller
             'password' => Hash::make($validatedData['password']),
         ]);
 
-        // ✅ Si l'utilisateur est un candidat, on l'ajoute dans la table `candidats`
-        if ($user->type_utilisateur == 'CANDIDAT') {
-            app(CandidatController::class)->addCandidateAfterRegister($user->id, $request->all());
+        // ✅ Vérification si l'utilisateur est bien créé
+        // dd($user);
+
+        // ✅ Ajouter dans `candidats` si c'est un candidat
+        if ($user->type_utilisateur === 'CANDIDAT') {
+            Candidat::create([
+                'user_id' => $user->id,
+                'parti_politique' => $request->parti_politique ?? null,
+                'slogan' => $request->slogan ?? null,
+                'photo' => $request->photo ?? null,
+                'couleurs_parti' => $request->couleurs_parti ?? null,
+                'url_candidat' => $request->url_candidat ?? null,
+            ]);
         }
 
-        // ✅ Gestion des réponses en fonction du type de requête
-        if ($request->wantsJson()) {
-            $token = $user->createToken('auth_token')->plainTextToken;
-            return response()->json(['user' => $user, 'token' => $token], 201);
-        } else {
-            return redirect('/register')->with('success', 'Inscription réussie ! Connectez-vous maintenant.');
-        }
+        // ✅ Redirection vers la page de connexion avec message de succès
+        return redirect('/login')->with('success', 'Inscription réussie ! Connectez-vous maintenant.');
     }
 
     /**
-     * Connecte un utilisateur
+     * Connecte un utilisateur et redirige vers /accueil-parrainage
      */
     public function login(Request $request)
     {
         // ✅ Validation des champs
         $credentials = $request->validate([
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
-        // Vérifier si les identifiants sont valides
         if (!Auth::attempt($credentials)) {
-            return response()->json(['message' => 'Unauthorized'], 401);
+            return back()->withErrors(['email' => 'Les informations de connexion sont incorrectes.']);
         }
 
-        // Récupérer l'utilisateur
-        $user = Auth::user();
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $request->session()->regenerate();
 
-        return response()->json(['user' => $user, 'token' => $token]);
+        return redirect()->route('accueil.parrainage')->with('success', 'Connexion réussie !');
     }
 
     /**
-     * Déconnecte l'utilisateur (suppression du token)
+     * Déconnecte l'utilisateur et redirige vers /login
      */
-    public function logout(Request $request)
+    public function logout()
     {
-        if (!$request->user()) {
-            return response()->json(['message' => 'Aucun utilisateur connecté.'], 401);
-        }
-
-        $request->user()->tokens()->delete();
-        return response()->json(['message' => 'Déconnexion réussie.']);
+        Auth::logout();
+        return redirect('/login')->with('success', 'Déconnexion réussie.');
     }
 }

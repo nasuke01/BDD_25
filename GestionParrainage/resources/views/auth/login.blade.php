@@ -7,6 +7,10 @@
 </head>
 <body>
     <h1>Connexion</h1>
+    @if(session('success'))
+    <p style="color: green; font-weight: bold;">{{ session('success') }}</p>
+@endif
+
     <form method="POST" action="{{ url('/login') }}">
         @csrf
         <label>Email :</label>

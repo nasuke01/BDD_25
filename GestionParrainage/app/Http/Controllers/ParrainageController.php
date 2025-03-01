@@ -10,6 +10,14 @@ use App\Models\Candidat;
 class ParrainageController extends Controller
 {
     /**
+     * Affiche la page d'accueil du parrainage après connexion
+     */
+    public function accueilParrainage()
+    {
+        return view('accueil-parrainage');
+    }
+
+    /**
      * Récupérer la liste des parrainages (JSON)
      */
     public function index()

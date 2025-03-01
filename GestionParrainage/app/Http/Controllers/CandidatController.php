@@ -7,12 +7,14 @@ use App\Models\Candidat;
 
 class CandidatController extends Controller
 {
-    /**
-     * Afficher la liste des candidats
-     */
     public function afficherCandidats()
     {
-        $candidats = Candidat::with('user')->get(); // ✅ Récupérer les candidats avec leurs utilisateurs
-        return view('candidats', compact('candidats')); // ✅ Envoyer les candidats à la vue
+        $candidats = Candidat::with('user')->get();
+
+        if ($candidats->isEmpty()) {
+            return view('candidats')->with('message', 'Aucun candidat trouvé.');
+        }
+
+        return view('candidats', compact('candidats'));
     }
 }

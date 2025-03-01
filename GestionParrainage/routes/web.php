@@ -20,6 +20,13 @@ Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 // ✅ Routes pour l'inscription et la connexion
 Route::post('/register', [AuthController::class, 'register'])->name('auth.register');
 Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// ✅ Route protégée pour afficher la page après connexion
+Route::middleware(['auth'])->get('/accueil-parrainage', [ParrainageController::class, 'accueilParrainage'])->name('accueil.parrainage');
+
+// ✅ Route protégée pour afficher le profil après connexion
+Route::middleware(['auth'])->get('/profile', [UserController::class, 'profile'])->name('profile');
 
 // ✅ Route pour la déconnexion (GET pour tests, POST pour sécurité)
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout.get');
@@ -49,14 +56,13 @@ Route::get('/candidats/inscription', [CandidatController::class, 'create'])->nam
 Route::post('/candidats', [CandidatController::class, 'store'])->name('candidats.store');
 
 // ✅ Route pour afficher la liste des candidats en Blade
-Route::get('/candidats', [CandidatController::class, 'afficherCandidats'])->name('candidats.afficher');
+Route::middleware(['auth'])->get('/candidats', [CandidatController::class, 'afficherCandidats'])->name('candidats.afficher');
 
-// route pour afficher parrainage en blade
-Route::get('/parrainer/{id}', [ParrainageController::class, 'afficherFormulaire'])->name('parrainage.form');
-Route::post('/parrainage', [ParrainageController::class, 'store'])->name('parrainage.store');
+// ✅ Route pour afficher le formulaire de parrainage en Blade
+Route::middleware(['auth'])->get('/parrainer/{id}', [ParrainageController::class, 'afficherFormulaire'])->name('parrainage.form');
+Route::middleware(['auth'])->post('/parrainage', [ParrainageController::class, 'store'])->name('parrainage.store');
 
-
-// ✅ Routes pour le parrainage
+// ✅ Routes pour le parrainage (API JSON)
 Route::get('/parrainage', [ParrainageController::class, 'index'])->name('parrainage.index');
 Route::post('/parrainage', [ParrainageController::class, 'store'])->name('parrainage.store');
 Route::get('/parrainage/confirmation', [ParrainageController::class, 'confirmation'])->name('parrainage.confirmation');
