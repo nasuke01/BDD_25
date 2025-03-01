@@ -4,28 +4,38 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\PeriodeParrainage;
-use App\Http\Requests\PeriodeParrainageRequest;
+use Carbon\Carbon;
 
 class PeriodeParrainageController extends Controller
 {
-    public function index()
+    /**
+     * Afficher le formulaire d'ajout de période de parrainage
+     */
+    public function showForm()
     {
-        return response()->json(PeriodeParrainage::all(), 200);
+        return view('admin.parrainage');
     }
 
-    public function store(PeriodeParrainageRequest $request)
+    /**
+     * Enregistrer une nouvelle période de parrainage
+     */
+    public function store(Request $request)
     {
-        $periode = PeriodeParrainage::create($request->validated());
-        return response()->json(['message' => 'Période de parrainage ajoutée avec succès', 'periode' => $periode], 201);
-    }
+        // Récupérer la date actuelle
+        $now = Carbon::now();
 
-    public function update(PeriodeParrainageRequest $request, $id)
-    {
-        $periode = PeriodeParrainage::find($id);
-        if (!$periode) {
-            return response()->json(['message' => 'Période de parrainage non trouvée'], 404);
-        }
-        $periode->update($request->validated());
-        return response()->json(['message' => 'Période de parrainage mise à jour', 'periode' => $periode], 200);
+        // ✅ Validation des dates
+        $request->validate([
+            'date_debut' => ['required', 'date', 'after:' . $now->addMonths(6)->toDateString()],
+            'date_fin' => ['required', 'date', 'after:date_debut'],
+        ]);
+
+        // ✅ Enregistrer la période
+        PeriodeParrainage::create([
+            'date_debut' => $request->date_debut,
+            'date_fin' => $request->date_fin,
+        ]);
+
+        return redirect()->back()->with('success', 'Période de parrainage enregistrée avec succès.');
     }
 }

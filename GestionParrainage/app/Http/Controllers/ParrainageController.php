@@ -4,96 +4,42 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Parrainage;
-use App\Http\Requests\ParrainageRequest;
-use App\Models\Candidat;
+use App\Models\PeriodeParrainage;
+use Carbon\Carbon;
 
 class ParrainageController extends Controller
 {
     /**
-     * Affiche la page d'accueil du parrainage après connexion
-     */
-    public function accueilParrainage()
-    {
-        return view('accueil-parrainage');
-    }
-
-    /**
-     * Récupérer la liste des parrainages (JSON)
-     */
-    public function index()
-    {
-        return response()->json(Parrainage::all(), 200);
-    }
-
-    /**
-     * Afficher le formulaire de parrainage pour un candidat donné
-     */
-    public function afficherFormulaire($id)
-    {
-        $candidat = Candidat::with('user')->findOrFail($id);
-        return view('parrainer', compact('candidat'));
-    }
-
-    /**
-     * Enregistrer un parrainage
+     * Enregistrer un parrainage et empêcher après la date de fin
      */
     public function store(Request $request)
     {
+        $periode = PeriodeParrainage::latest()->first();
+        $now = Carbon::now();
+
+        // ✅ Vérifier si la période de parrainage est encore ouverte
+        if ($periode && $now->greaterThanOrEqualTo($periode->date_fin)) {
+            return back()->withErrors(['error' => 'Le parrainage est fermé car la période est terminée.']);
+        }
+
+        // ✅ Validation
         $request->validate([
             'candidat_id' => 'required|exists:candidats,id',
         ]);
 
-        $electeurId = auth()->id(); // Récupère l'ID de l'électeur connecté
+        $electeurId = auth()->id();
 
         // Vérifie si l'électeur a déjà parrainé un candidat
         if (Parrainage::where('electeur_id', $electeurId)->exists()) {
-            return redirect()->back()->with('error', 'Vous avez déjà parrainé un candidat.');
+            return back()->withErrors(['error' => 'Vous avez déjà parrainé un candidat.']);
         }
 
-        // Enregistrement du parrainage
+        // ✅ Enregistrement du parrainage
         $parrainage = new Parrainage();
         $parrainage->electeur_id = $electeurId;
         $parrainage->candidat_id = $request->candidat_id;
         $parrainage->save();
 
         return redirect()->route('candidats.afficher')->with('success', 'Parrainage enregistré avec succès !');
-    }
-
-    /**
-     * Récupérer un parrainage spécifique (JSON)
-     */
-    public function show($id)
-    {
-        $parrainage = Parrainage::find($id);
-        if (!$parrainage) {
-            return response()->json(['message' => 'Parrainage non trouvé'], 404);
-        }
-        return response()->json($parrainage, 200);
-    }
-
-    /**
-     * Mettre à jour un parrainage (JSON)
-     */
-    public function update(ParrainageRequest $request, $id)
-    {
-        $parrainage = Parrainage::find($id);
-        if (!$parrainage) {
-            return response()->json(['message' => 'Parrainage non trouvé'], 404);
-        }
-        $parrainage->update($request->validated());
-        return response()->json(['message' => 'Parrainage mis à jour', 'parrainage' => $parrainage], 200);
-    }
-
-    /**
-     * Supprimer un parrainage (JSON)
-     */
-    public function destroy($id)
-    {
-        $parrainage = Parrainage::find($id);
-        if (!$parrainage) {
-            return response()->json(['message' => 'Parrainage non trouvé'], 404);
-        }
-        $parrainage->delete();
-        return response()->json(['message' => 'Parrainage supprimé'], 200);
     }
 }

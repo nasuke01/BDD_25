@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class PeriodeParrainage extends Model
 {
     use HasFactory;
+
+    protected $table = 'periodes_parrainage';
+
+    protected $fillable = [
+        'date_debut',
+        'date_fin',
+    ];
 }

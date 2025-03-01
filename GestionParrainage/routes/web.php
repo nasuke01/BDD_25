@@ -74,3 +74,10 @@ Route::get('/electeurs/verification', [ElecteurController::class, 'verification'
 
 // ✅ Route pour le tableau de bord
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+
+use App\Http\Controllers\PeriodeParrainageController;
+
+// ✅ Route pour afficher le formulaire d'ajout de période (admin uniquement)
+Route::get('/admin/parrainage', [PeriodeParrainageController::class, 'showForm'])->name('periode.form');
+Route::post('/admin/parrainage', [PeriodeParrainageController::class, 'store'])->name('periode.store');
+

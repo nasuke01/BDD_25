@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Candidat;
+use App\Models\PeriodeParrainage;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
@@ -27,10 +29,18 @@ class AuthController extends Controller
     }
 
     /**
-     * Enregistre un nouvel utilisateur et l'ajoute dans `candidats` si c'est un candidat
+     * Enregistre un nouvel utilisateur et bloque l'inscription des candidats après le début du parrainage
      */
     public function register(Request $request)
     {
+        $periode = PeriodeParrainage::latest()->first();
+        $now = Carbon::now();
+
+        // ✅ Vérifier si la période de parrainage a déjà commencé et empêcher l'inscription des candidats
+        if ($periode && $now->greaterThanOrEqualTo($periode->date_debut) && $request->type_utilisateur === 'CANDIDAT') {
+            return back()->withErrors(['error' => 'L\'ajout de candidats est fermé car la période de parrainage a commencé.']);
+        }
+
         // ✅ Validation des champs
         $validatedData = $request->validate([
             'numCarteElecteur' => 'required|string|unique:users,numCarteElecteur',
@@ -42,7 +52,7 @@ class AuthController extends Controller
             'type_utilisateur' => 'required|in:ELECTEUR,CANDIDAT,ADMINISTRATEUR',
             'password' => 'required|string|min:6|confirmed',
             'parti_politique' => 'nullable|string|max:255',
-            'slogan' => 'nullable|string|max:255', // ✅ Ajout de la validation du slogan
+            'slogan' => 'nullable|string|max:255',
         ]);
 
         // ✅ Création de l'utilisateur
@@ -62,7 +72,7 @@ class AuthController extends Controller
             Candidat::create([
                 'user_id' => $user->id,
                 'parti_politique' => $validatedData['parti_politique'] ?? 'Indépendant',
-                'slogan' => $validatedData['slogan'] ?? 'Aucun slogan défini', // ✅ Enregistre le slogan ou affiche un texte par défaut
+                'slogan' => $validatedData['slogan'] ?? 'Aucun slogan défini',
                 'photo' => $request->photo ?? null,
                 'couleurs_parti' => $request->couleurs_parti ?? null,
                 'url_candidat' => $request->url_candidat ?? null,
