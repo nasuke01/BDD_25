@@ -11,8 +11,8 @@ class TempControleElecteur extends Model
     
     protected $fillable = [
         'tentative_upload_id',
-        'numCIN',
-        'numElecteur',
+        'cin',
+        'numCarteElecteur',
         'probleme',
     ];
 
