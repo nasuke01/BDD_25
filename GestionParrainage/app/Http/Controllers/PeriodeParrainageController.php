@@ -13,9 +13,10 @@ class PeriodeParrainageController extends Controller
      */
     public function showForm()
     {
+        dd("Vue chargée !");
         return view('admin.parrainage');
     }
-
+    
     /**
      * Enregistrer une nouvelle période de parrainage
      */
