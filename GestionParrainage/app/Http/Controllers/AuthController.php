@@ -41,7 +41,8 @@ class AuthController extends Controller
             'telephone' => 'required|string|unique:users,telephone',
             'type_utilisateur' => 'required|in:ELECTEUR,CANDIDAT,ADMINISTRATEUR',
             'password' => 'required|string|min:6|confirmed',
-            'parti_politique' => 'nullable|string|max:255', // ✅ Ajout du champ parti politique
+            'parti_politique' => 'nullable|string|max:255',
+            'slogan' => 'nullable|string|max:255', // ✅ Ajout de la validation du slogan
         ]);
 
         // ✅ Création de l'utilisateur
@@ -60,8 +61,8 @@ class AuthController extends Controller
         if ($user->type_utilisateur === 'CANDIDAT') {
             Candidat::create([
                 'user_id' => $user->id,
-                'parti_politique' => $validatedData['parti_politique'] ?? 'Indépendant', // ✅ Prend le parti sinon "Indépendant"
-                'slogan' => $request->slogan ?? null,
+                'parti_politique' => $validatedData['parti_politique'] ?? 'Indépendant',
+                'slogan' => $validatedData['slogan'] ?? 'Aucun slogan défini', // ✅ Enregistre le slogan ou affiche un texte par défaut
                 'photo' => $request->photo ?? null,
                 'couleurs_parti' => $request->couleurs_parti ?? null,
                 'url_candidat' => $request->url_candidat ?? null,
