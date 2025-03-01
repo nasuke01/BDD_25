@@ -47,9 +47,6 @@
         <label>Parti Politique (si Candidat) :</label>
         <input type="text" name="parti_politique">
 
-        <label>Slogan (si Candidat) :</label>
-        <input type="text" name="slogan">
-
         <label>Mot de passe :</label>
         <input type="password" name="password" required>
 

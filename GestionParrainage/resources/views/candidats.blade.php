@@ -15,7 +15,6 @@
         <div>
             <h3>{{ $candidat->user->nom }} {{ $candidat->user->prenom }}</h3>
             <p><strong>Parti :</strong> {{ $candidat->parti_politique ?? 'Indépendant' }}</p>
-            <p><strong>Slogan :</strong> {{ $candidat->slogan ?? 'Aucun slogan défini' }}</p>
             <a href="{{ route('parrainage.form', ['id' => $candidat->id]) }}">Parrainer</a>
         </div>
     @endforeach

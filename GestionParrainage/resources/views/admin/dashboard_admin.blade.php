@@ -33,5 +33,19 @@
         @csrf
         <button type="submit" style="background-color: red; color: white;">Fermer Parrainage</button>
     </form>
+
+    <br>
+
+    <!-- ✅ Nouveau bouton pour rouvrir le dépôt des candidatures -->
+    <form method="POST" action="{{ route('admin.rouvrir.candidature') }}">
+        @csrf
+        <button type="submit" style="background-color: green; color: white;">Rouvrir Dépôt de Candidature</button>
+    </form>
+
+    <!-- ✅ Nouveau bouton pour rouvrir le parrainage -->
+    <form method="POST" action="{{ route('admin.rouvrir.parrainage') }}">
+        @csrf
+        <button type="submit" style="background-color: green; color: white;">Rouvrir Parrainage</button>
+    </form>
 </body>
 </html>

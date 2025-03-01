@@ -1,4 +1,3 @@
-<!-- resources/views/auth/login.blade.php -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -8,10 +7,10 @@
 <body>
     <h1>Connexion</h1>
     @if(session('success'))
-    <p style="color: green; font-weight: bold;">{{ session('success') }}</p>
-@endif
+        <p style="color: green;">{{ session('success') }}</p>
+    @endif
 
-    <form method="POST" action="{{ url('/login') }}">
+    <form method="POST" action="{{ route('auth.login') }}">
         @csrf
         <label>Email :</label>
         <input type="email" name="email" required>

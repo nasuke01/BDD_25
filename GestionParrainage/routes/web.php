@@ -56,6 +56,9 @@ Route::get('/candidats-json', [CandidatController::class, 'index'])->name('candi
 Route::get('/candidats/inscription', [CandidatController::class, 'create'])->name('candidats.create');
 Route::post('/candidats', [CandidatController::class, 'store'])->name('candidats.store');
 
+// ✅ Route pour afficher la liste des candidats
+Route::get('/candidats', [CandidatController::class, 'afficherCandidats'])->name('candidats.afficher');
+
 // ✅ Route pour afficher la liste des candidats en Blade
 Route::middleware(['auth'])->get('/candidats', [CandidatController::class, 'afficherCandidats'])->name('candidats.afficher');
 
@@ -89,3 +92,27 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admin/fermer-parrainage', [AdminController::class, 'fermerParrainage'])->name('admin.fermer.parrainage');
     Route::post('/admin/fermer-candidature', [AdminController::class, 'fermerCandidature'])->name('admin.fermer.candidature');
 });
+
+// ✅ Routes pour la gestion des périodes de parrainage
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::post('/admin/fermer-parrainage', [AdminController::class, 'fermerParrainage'])->name('admin.fermer.parrainage');
+    Route::post('/admin/fermer-candidature', [AdminController::class, 'fermerCandidature'])->name('admin.fermer.candidature');
+
+    // ✅ Routes pour rouvrir les candidatures et le parrainage
+    Route::post('/admin/rouvrir-parrainage', [AdminController::class, 'rouvrirParrainage'])->name('admin.rouvrir.parrainage');
+    Route::post('/admin/rouvrir-candidature', [AdminController::class, 'rouvrirCandidature'])->name('admin.rouvrir.candidature');
+});
+
+
+// ✅ Route pour afficher le formulaire de parrainage
+Route::get('/parrainer/{id}', [ParrainageController::class, 'afficherFormulaire'])->name('parrainage.form');
+// ✅ Route pour afficher la page d'accueil du parrainage
+Route::get('/accueil-parrainage', [ParrainageController::class, 'accueilParrainage'])->name('accueil.parrainage');
+ 
+
+
+// ✅ Routes d'authentification
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
