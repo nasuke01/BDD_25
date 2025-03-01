@@ -44,6 +44,9 @@
             <option value="ADMINISTRATEUR">Administrateur</option>
         </select>
 
+        <label>Parti Politique (si Candidat) :</label>
+        <input type="text" name="parti_politique">
+
         <label>Mot de passe :</label>
         <input type="password" name="password" required>
 

@@ -27,13 +27,10 @@ class AuthController extends Controller
     }
 
     /**
-     * Enregistre un nouvel utilisateur et l'ajoute à la table `candidats` si c'est un candidat
+     * Enregistre un nouvel utilisateur et l'ajoute dans `candidats` si c'est un candidat
      */
     public function register(Request $request)
     {
-        // ✅ Vérifier que les données du formulaire sont bien envoyées
-        // dd($request->all());
-
         // ✅ Validation des champs
         $validatedData = $request->validate([
             'numCarteElecteur' => 'required|string|unique:users,numCarteElecteur',
@@ -44,9 +41,10 @@ class AuthController extends Controller
             'telephone' => 'required|string|unique:users,telephone',
             'type_utilisateur' => 'required|in:ELECTEUR,CANDIDAT,ADMINISTRATEUR',
             'password' => 'required|string|min:6|confirmed',
+            'parti_politique' => 'nullable|string|max:255', // ✅ Ajout du champ parti politique
         ]);
 
-        // ✅ Création de l'utilisateur dans `users`
+        // ✅ Création de l'utilisateur
         $user = User::create([
             'numCarteElecteur' => $validatedData['numCarteElecteur'],
             'dateNaissance' => $validatedData['dateNaissance'],
@@ -58,14 +56,11 @@ class AuthController extends Controller
             'password' => Hash::make($validatedData['password']),
         ]);
 
-        // ✅ Vérification si l'utilisateur est bien créé
-        // dd($user);
-
         // ✅ Ajouter dans `candidats` si c'est un candidat
         if ($user->type_utilisateur === 'CANDIDAT') {
             Candidat::create([
                 'user_id' => $user->id,
-                'parti_politique' => $request->parti_politique ?? null,
+                'parti_politique' => $validatedData['parti_politique'] ?? 'Indépendant', // ✅ Prend le parti sinon "Indépendant"
                 'slogan' => $request->slogan ?? null,
                 'photo' => $request->photo ?? null,
                 'couleurs_parti' => $request->couleurs_parti ?? null,
@@ -73,36 +68,6 @@ class AuthController extends Controller
             ]);
         }
 
-        // ✅ Redirection vers la page de connexion avec message de succès
         return redirect('/login')->with('success', 'Inscription réussie ! Connectez-vous maintenant.');
-    }
-
-    /**
-     * Connecte un utilisateur et redirige vers /accueil-parrainage
-     */
-    public function login(Request $request)
-    {
-        // ✅ Validation des champs
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-
-        if (!Auth::attempt($credentials)) {
-            return back()->withErrors(['email' => 'Les informations de connexion sont incorrectes.']);
-        }
-
-        $request->session()->regenerate();
-
-        return redirect()->route('accueil.parrainage')->with('success', 'Connexion réussie !');
-    }
-
-    /**
-     * Déconnecte l'utilisateur et redirige vers /login
-     */
-    public function logout()
-    {
-        Auth::logout();
-        return redirect('/login')->with('success', 'Déconnexion réussie.');
     }
 }
