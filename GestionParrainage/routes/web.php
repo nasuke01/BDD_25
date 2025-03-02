@@ -124,4 +124,4 @@ Route::get('/api/statistiques', [CandidatController::class, 'statistiques']);
 // ✅ Route pour afficher le classement en React
 Route::get('/classement', function () {
     return view('classement');
-});
+}); 
