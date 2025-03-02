@@ -17,4 +17,13 @@ class CandidatController extends Controller
 
         return view('candidats', compact('candidats'));
     }
+    public function statistiques()
+{
+    $candidats = Candidat::withCount('parrainages')
+        ->orderByDesc('parrainages_count')
+        ->get();
+
+    return response()->json($candidats);
+}
+
 }

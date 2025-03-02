@@ -9,6 +9,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ElecteurController;
 use App\Http\Controllers\DashboardController;
 
+
 // ✅ Test pour voir si Laravel fonctionne
 Route::get('/test', function () {
     return "Laravel fonctionne !";
@@ -116,3 +117,11 @@ Route::get('/accueil-parrainage', [ParrainageController::class, 'accueilParraina
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// ✅ Route API pour récupérer les statistiques des candidats
+Route::get('/api/statistiques', [CandidatController::class, 'statistiques']);
+
+// ✅ Route pour afficher le classement en React
+Route::get('/classement', function () {
+    return view('classement');
+});

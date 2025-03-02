@@ -7,6 +7,10 @@
 <body>
     <h1>Liste des candidats</h1>
 
+    @if(session('success'))
+        <p style="color: green; font-weight: bold;">{{ session('success') }}</p>
+    @endif
+
     @if(session('message'))
         <p style="color: red;">{{ session('message') }}</p>
     @endif

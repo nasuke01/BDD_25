@@ -46,7 +46,8 @@ class ParrainageController extends Controller
             'electeur_id' => $electeurId,
             'candidat_id' => $request->candidat_id,
         ]);
-
+        return redirect()->route('candidats.afficher')->with('success', 'Votre parrainage a été enregistré avec succès.');
         return redirect()->route('candidats.afficher')->with('success', 'Parrainage enregistré avec succès !');
     }
+    
 }
