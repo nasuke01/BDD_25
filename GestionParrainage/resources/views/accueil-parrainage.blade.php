@@ -5,11 +5,18 @@
     <meta charset="UTF-8">
     <title>Accueil Parrainage</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 50px;
-        }
+        
+            body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 50px;
+    background-image: url('{{ asset('images/baobab.jpg') }}');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+        
         h1 {
             color: #e74c3c;
         }
