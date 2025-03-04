@@ -46,6 +46,9 @@ class ParrainageController extends Controller
             'electeur_id' => $electeurId,
             'candidat_id' => $request->candidat_id,
         ]);
+          // ✅ Incrémentation automatique du nombre de parrainages du candidat
+    Candidat::where('id', $request->candidat_id)->increment('parrainages_count');
+    
         return redirect()->route('candidats.afficher')->with('success', 'Votre parrainage a été enregistré avec succès.');
         return redirect()->route('candidats.afficher')->with('success', 'Parrainage enregistré avec succès !');
     }

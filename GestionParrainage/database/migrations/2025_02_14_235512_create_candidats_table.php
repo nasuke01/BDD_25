@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->string('photo')->nullable();
             $table->string('couleurs_parti')->nullable();
             $table->string('url_candidat')->nullable();
+            $table->integer('parrainages_count')->default(0);
             $table->timestamps();
         });
     }

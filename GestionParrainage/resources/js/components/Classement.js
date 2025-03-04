@@ -3,11 +3,20 @@ import React, { useEffect, useState } from "react";
 const Classement = () => {
     const [candidats, setCandidats] = useState([]);
 
-    useEffect(() => {
+    const fetchData = () => {
         fetch("/api/statistiques")
             .then((response) => response.json())
-            .then((data) => setCandidats(data))
+            .then((data) => {
+                console.log("Données reçues :", data);
+                setCandidats(data);
+            })
             .catch((error) => console.error("Erreur de récupération :", error));
+    };
+
+    useEffect(() => {
+        fetchData(); // Chargement initial
+        const interval = setInterval(fetchData, 5000); // Rafraîchissement toutes les 5 secondes
+        return () => clearInterval(interval);
     }, []);
 
     return (
@@ -29,7 +38,7 @@ const Classement = () => {
                         {candidats.map((candidat, index) => (
                             <tr key={candidat.id}>
                                 <td>{index + 1}</td>
-                                <td>{candidat.user.nom} {candidat.user.prenom}</td>
+                                <td>{candidat.user?.nom} {candidat.user?.prenom}</td>
                                 <td>{candidat.parti_politique || "Indépendant"}</td>
                                 <td>{candidat.parrainages_count}</td>
                             </tr>

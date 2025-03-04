@@ -7,23 +7,32 @@ use App\Models\Candidat;
 
 class CandidatController extends Controller
 {
-    public function afficherCandidats()
-    {
-        $candidats = Candidat::with('user')->get();
-
-        if ($candidats->isEmpty()) {
-            return view('candidats')->with('message', 'Aucun candidat trouvé.');
-        }
-
-        return view('candidats', compact('candidats'));
-    }
-    public function statistiques()
+  
+    
+    public function afficherClassement()
 {
-    $candidats = Candidat::withCount('parrainages')
-        ->orderByDesc('parrainages_count')
-        ->get();
+    $candidats = Candidat::with('user')->orderByDesc('parrainages_count')->get();
+
+    return view('classement', compact('candidats'));
+}
+
+    
+public function statistiques()
+{
+    $candidats = Candidat::with('user:id,nom,prenom') // ✅ On récupère bien le user avec son nom et prénom
+                        ->orderByDesc('parrainages_count')
+                        ->get();
 
     return response()->json($candidats);
 }
+
+  
+    public function afficherCandidats()
+    {
+        $candidats = Candidat::with('user')->get(); // Récupère tous les candidats avec leurs informations utilisateur
+    
+        return view('candidats', compact('candidats'));
+    }
+    
 
 }

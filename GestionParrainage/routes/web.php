@@ -125,3 +125,13 @@ Route::get('/api/statistiques', [CandidatController::class, 'statistiques']);
 Route::get('/classement', function () {
     return view('classement');
 }); 
+
+// ✅ Route pour afficher la page avec les statistiques
+Route::get('/classement', [CandidatController::class, 'afficherClassement']);
+
+
+// ✅ Route pour afficher la page du classement en Blade
+Route::get('/classement', [CandidatController::class, 'afficherClassement'])->name('classement');
+
+// ✅ Route API pour récupérer les statistiques des candidats
+Route::get('/api/statistiques', [CandidatController::class, 'statistiques'])->name('api.statistiques');
