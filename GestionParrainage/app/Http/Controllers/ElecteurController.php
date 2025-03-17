@@ -136,6 +136,7 @@ class ElecteurController extends Controller
                     'dateNaissance' => $data[3],
                     'email' => $data[4],
                     'telephone' => $data[5],
+                    'password' => bcrypt('default_password') // Valeur par défaut pour le mot de passe
                 ]
             );
         }

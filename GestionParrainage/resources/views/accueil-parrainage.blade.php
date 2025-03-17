@@ -40,12 +40,12 @@
     </style>
 </head>
 <body>
-    <h1>DAGEY PARRAINER ? KAYYY WAYYY !</h1>
+    <h1>TU VEUX PARRAINER ? SOIS LE BIENVENU</h1>
     
     <p>Bienvenue cher électeur. Comme vous le voyez, cette page a été conçue pour les élections.</p>
     <p>Pour procéder au parrainage, veuillez cliquer sur le bouton ci-dessous :</p>
 
     <!-- ✅ Bouton pour accéder à la liste des candidats -->
-    <a href="{{ route('candidats.afficher') }}" class="btn">Damey Parrainer</a>
+    <a href="{{ route('candidats.afficher') }}" class="btn">COMMENCER MON PARRAINAGE</a>
 </body>
 </html>
