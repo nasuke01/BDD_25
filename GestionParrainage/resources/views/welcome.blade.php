@@ -145,9 +145,10 @@
 
         <!-- ✅ Bouton d'inscription -->
         <a href="{{ route('register') }}" class="cta-btn">
-            DAGA BEUGUEU PARRAINER WEULEU NEKK CANDIDAT ? BEUSSEUL FI 🚀
+            Pour commencer Inscris toi en cliquant ici🚀
         </a>
     </div>
+    
 
 </body>
 </html>

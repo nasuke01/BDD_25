@@ -2,125 +2,120 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liste des candidats</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
-        /* Importation de la police */
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+        body {
+            background: url("{{ asset('images/senegall.jpeg') }}") no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Arial', sans-serif;
         }
 
-        body {
-            background: linear-gradient(135deg, #2c3e50, #8e44ad);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
+        .container {
+            margin-top: 50px;
+            text-align: center;
         }
 
         h1 {
-            color: white;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #007bff;
             margin-bottom: 20px;
         }
 
-        .message {
-            font-weight: bold;
-            padding: 10px;
-            border-radius: 5px;
-            width: 80%;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-
-        .success {
-            background: rgba(46, 204, 113, 0.2);
-            color: #27ae60;
-            border-left: 5px solid #27ae60;
-        }
-
-        .error {
-            background: rgba(231, 76, 60, 0.2);
-            color: #e74c3c;
-            border-left: 5px solid #e74c3c;
-        }
-
-        .candidats-container {
+        /* ✅ Grid pour aligner les cartes */
+        .grid-container {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 20px;
-            width: 90%;
-            max-width: 1200px;
         }
 
-        .candidat-card {
-            background: white;
+        /* ✅ Carte de candidat */
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            width: 300px;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
-            width: 280px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
             text-align: center;
-            transition: transform 0.3s ease-in-out;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .candidat-card:hover {
-            transform: translateY(-5px);
+        /* ✅ Effet au survol */
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3);
         }
 
-        .candidat-card h3 {
-            color: #8e44ad;
+        .card h3 {
+            font-size: 1.5rem;
+            color: #333;
             margin-bottom: 10px;
         }
 
-        .candidat-card p {
-            font-size: 16px;
+        .card p {
+            font-size: 1rem;
+            color: #555;
             margin-bottom: 15px;
         }
 
-        .btn {
-            display: inline-block;
-            padding: 10px 15px;
-            font-size: 16px;
+        .btn-parrainer {
+            background-color: #28a745;
             color: white;
-            background-color: #8e44ad;
+            font-size: 1rem;
+            font-weight: bold;
+            padding: 10px 15px;
             border-radius: 5px;
             text-decoration: none;
-            transition: 0.3s;
+            display: inline-block;
+            transition: background 0.3s ease-in-out;
         }
 
-        .btn:hover {
-            background-color: #5e3370;
+        .btn-parrainer:hover {
+            background-color: #218838;
+        }
+
+        .alert {
+            font-size: 1rem;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .success {
+            color: green;
+        }
+
+        .error {
+            color: red;
         }
     </style>
 </head>
 <body>
-    <h1>Liste des candidats</h1>
 
-    @if(session('success'))
-        <div class="message success">
-            <p>{{ session('success') }}</p>
+    <div class="container">
+        <h1>Liste des candidats</h1>
+
+        @if(session('success'))
+            <p class="alert success">{{ session('success') }}</p>
+        @endif
+
+        @if(session('message'))
+            <p class="alert error">{{ session('message') }}</p>
+        @endif
+
+        <!-- ✅ Grid des candidats -->
+        <div class="grid-container">
+            @foreach ($candidats as $candidat)
+                <div class="card">
+                    <h3>{{ $candidat->user->nom }} {{ $candidat->user->prenom }}</h3>
+                    <p><strong>Parti :</strong> {{ $candidat->parti_politique ?? 'Indépendant' }}</p>
+                    <a href="{{ route('parrainage.form', ['id' => $candidat->id]) }}" class="btn-parrainer">Parrainer</a>
+                </div>
+            @endforeach
         </div>
-    @endif
-
-    @if(session('message'))
-        <div class="message error">
-            <p>{{ session('message') }}</p>
-        </div>
-    @endif
-
-    <div class="candidats-container">
-        @foreach ($candidats as $candidat)
-            <div class="candidat-card">
-                <h3>{{ $candidat->user->nom }} {{ $candidat->user->prenom }}</h3>
-                <p><strong>Parti :</strong> {{ $candidat->parti_politique ?? 'Indépendant' }}</p>
-                <a href="{{ route('parrainage.form', ['id' => $candidat->id]) }}" class="btn">Parrainer</a>
-            </div>
-        @endforeach
     </div>
+
 </body>
 </html>
