@@ -10,6 +10,7 @@ use App\Http\Controllers\ElecteurController;
 use App\Http\Controllers\DashboardController;
 
 
+
 // ✅ Test pour voir si Laravel fonctionne
 Route::get('/test', function () {
     return "Laravel fonctionne !";
@@ -135,3 +136,7 @@ Route::get('/classement', [CandidatController::class, 'afficherClassement'])->na
 
 // ✅ Route API pour récupérer les statistiques des candidats
 Route::get('/api/statistiques', [CandidatController::class, 'statistiques'])->name('api.statistiques');
+
+
+Route::get('/electeurs/import', [ElecteurController::class, 'showImportForm'])->name('electeurs.importForm');
+Route::post('/electeurs/import', [ElecteurController::class, 'import'])->name('electeurs.import');
